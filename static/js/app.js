@@ -8,8 +8,7 @@ d3.json(url).then(function(data) {
     let names = data.names; 
     console.log(names);
    
-     }
-  );
+     });
 
   //initialize dashboard at start up
   function init() {
@@ -21,14 +20,16 @@ d3.json(url).then(function(data) {
         //use names not ID because names are in a list  
 d3.json(url).then((data) => {   
   let names = data.names; 
-  //name_id is the variable created  
-   names.forEach((name_id) => {
+  //id is the variable created  
+   names.forEach((id) => {
 dropdownMenu
 .append("option")
-.text(name_id)
-.property("value", name_id)
+.text(id)
+.property("value", id)
+   });
   
 // Set the first sample from the list
+//WHY IS THIS A MUST?
 let sample_one = names[0];
 
 // Log the value of sample_one
@@ -37,28 +38,31 @@ console.log(sample_one);
 // Initialize plots 
 //HOW CAN WE DO THIS BEFORE INTRODCUING THIS FUNCTION 
 buildMetadata(sample_one);
-//buildBarChart(sample_one);
-//buildBubbleChart(sample_one);
-
+buildBarChart(sample_one);
+buildBubbleChart(sample_one);
+});
+};
 
 //New function to build metadata demographics  
 function buildMetadata(sample) {
   d3.json(url).then((data) => {
     let metadata = data.metadata;
     let value = metadata.filter(result => result.id == sample);
-    console.log(value)
-    let valueData = value[0]
-//UNCLEAR HERE, only printing 
+    console.log(value);
+    let valueData = value[0];
+//UNCLEAR HERE, do we need to clear metadata in order to plot the selected sample? 
+d3.select("#sample-metadata").html("");
 let PANEL = d3.select("#sample-metadata");
 
 PANEL.html("");
 
+//Heading 5 does not reflect selected subject ID
 for (key in valueData) {
      PANEL.append("h5").text(`${key.toUpperCase()}: ${valueData[key]}`)
 }
   });
   };
-});
+
 
 
   // New functions to build bubble chart
@@ -101,9 +105,7 @@ for (key in valueData) {
 // }; };
    
 //     Plotly.newPlot("bubble", [trace1], layout);
-  }
-  //still part of function init 
-)}
+
 
   // Function that updates dashboard when sample is changed
 function optionChanged(newSample) { 
