@@ -7,8 +7,7 @@ d3.json(url).then(function(data) {
     console.log(data);  
     let names = data.names; 
     console.log(names);
-   
-     });
+        });
 
   //initialize dashboard at start up
   function init() {
@@ -17,10 +16,10 @@ d3.json(url).then(function(data) {
     let dropdownMenu = d3.select("#selDataset");
 
      // Assign the value of the dropdown menu option to a variable
-        //use names not ID because names are in a list  
+        //use 'names' not 'id' because names are in a list  
 d3.json(url).then((data) => {   
   let names = data.names; 
-  //id is the variable created  
+  //id is the variable created, not the existing object  
    names.forEach((id) => {
 dropdownMenu
 .append("option")
@@ -36,9 +35,10 @@ let sample_one = names[0];
 console.log(sample_one);
 
 // Initialize plots 
+//WHEN PRESS REFRESH goes back to sample 1
 //HOW CAN WE DO THIS BEFORE INTRODCUING THIS FUNCTION 
 buildMetadata(sample_one);
-//buildBarChart(sample_one);
+buildBarChart(sample_one);
 buildBubbleChart(sample_one);
 });
 };
@@ -100,19 +100,59 @@ let layout = {
   xaxis: {title: "OTU ID"},
 };
    
-    Plotly.newPlot("bubble", [trace1], layout);
+Plotly.newPlot("bubble", [trace1], layout);
 });
 };
 
+//New function to build bar chart
+function buildBarChart(sample) {
+  //this is repetion of above code, can these be combined?
+  //WHY 2 PARENTHESES AROUND DATA? 
+d3.json(url).then((data) => {
+  let samples = data.samples;
+  let sampleArray = samples.filter(sampleDict => sampleDict.id == sample)
+  let value = sampleArray[0];
+
+let otu_ids = value.otu_ids;
+let otu_labels = value.otu_labels;
+let sample_values = value.sample_values;
+//print data to console 
+console.log(otu_ids,otu_labels,sample_values);
+
+// Top ten items to display in descending order
+let yticks = otu_ids.slice(0,10).map(id => `OTU ${id}`).reverse();
+let xticks = sample_values.slice(0,10).reverse();
+let labels = otu_labels.slice(0,10).reverse();
+
+// Set up the trace for the bar chart
+let trace2 = {
+    x: xticks,
+    y: yticks,
+    text: labels,
+    type: "bar",
+    orientation: "h"
+};
+
+// Layout
+let layout = {
+    title: "Top 10 Bacteria Cultures Present"
+};
+
+// Call Plotly to plot the bar chart
+Plotly.newPlot("bar", [trace2], layout)
+});
+};
 
   // Function that updates dashboard when sample is changed
+  //why when using new_sample this didn't work? 
 function optionChanged(value) { 
   // Log the new value
   console.log(value); 
   // Call functions 
   buildMetadata(value);
-  //buildBarChart(value);
+  buildBarChart(value);
   buildBubbleChart(value);
- // buildGaugeChart(value);
-};
+ };
 init();
+
+//HOW TO ADD TO GITHIB PAGES?
