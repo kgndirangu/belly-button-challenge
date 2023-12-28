@@ -38,7 +38,7 @@ console.log(sample_one);
 // Initialize plots 
 //HOW CAN WE DO THIS BEFORE INTRODCUING THIS FUNCTION 
 buildMetadata(sample_one);
-buildBarChart(sample_one);
+//buildBarChart(sample_one);
 buildBubbleChart(sample_one);
 });
 };
@@ -65,56 +65,54 @@ for (key in valueData) {
 
 
 
-  // New functions to build bubble chart
-// function buildBubbleChart(sample) {
-//   //D3 to fetch data
-// d3.json(url).then(function(data) {
-//   let samples = data.samples; 
-//   let sampleArray = samples.filter(sampleDict => sampleDict.id == sample)
+ // New functions to build bubble chart
+function buildBubbleChart(sample) {
+  //D3 to fetch data
+d3.json(url).then(function(data) {
+  let samples = data.samples; 
+  let sampleArray = samples.filter(sampleDict => sampleDict.id == sample)
 
-//   //Grab the first index from array needed?
-// let value = sampleArray[0];
-// //value here is not a keyword, rather the name of each row of sample array
-// //why don't we have to create a list and push each row to the list
-// let otu_ids = value.otu_ids;
-// let otu_labels = value.otu_labels;
-// let sample_values = value.sample_values;
-// console.log(otu_ids,otu_labels,sample_values);
-// // Set up the layout
-// let layout = {
-//   title: "Bacteria Per Sample",
-//   hovermode: "closest",
-//   xaxis: {title: "OTU ID"},
-// }
+  //Grab the first index from array needed?
+let value = sampleArray[0];
+//value here is not a keyword, rather the name of each row of sample array
+//why don't we have to create a list and push each row to the list
+let otu_ids = value.otu_ids;
+let otu_labels = value.otu_labels;
+let sample_values = value.sample_values;
+console.log(otu_ids,otu_labels,sample_values);
 
+let trace1 = {
+  x: otu_ids,
+  y: sample_values,
+  text: otu_labels,
+  mode: "markers",
+  marker: {
+      size: sample_values,
+      color: otu_ids,
+      colorscale: "Earth"
+  }
+};
 
-
-//   let trace1 = {
-//     x: otu_ids,
-//     y: sample_values,
-//     text: otu_labels,
-//     mode: "markers",
-//     marker: {
-//         size: sample_values,
-//         color: otu_ids,
-//         colorscale: "Earth"
-//     }
-//       };
-//     });
+// Set up the layout
+let layout = {
+  title: "Bacteria Per Sample",
+  hovermode: "closest",
+  xaxis: {title: "OTU ID"},
+};
    
-// }; };
-   
-//     Plotly.newPlot("bubble", [trace1], layout);
+    Plotly.newPlot("bubble", [trace1], layout);
+});
+};
 
 
   // Function that updates dashboard when sample is changed
-function optionChanged(newSample) { 
+function optionChanged(value) { 
   // Log the new value
-  console.log(newSample); 
+  console.log(value); 
   // Call functions 
-  buildMetadata(newSample);
+  buildMetadata(value);
   //buildBarChart(value);
-  //buildBubbleChart(value);
+  buildBubbleChart(value);
  // buildGaugeChart(value);
 };
 init();
