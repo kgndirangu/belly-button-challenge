@@ -66,6 +66,7 @@ for (key in valueData) {
 
 
  // New functions to build bubble chart
+ //HOW DO WE KNOW WHERE CHART GOES ON PAGE?
 function buildBubbleChart(sample) {
   //D3 to fetch data
 d3.json(url).then(function(data) {
