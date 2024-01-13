@@ -9,6 +9,7 @@ d3.json(url).then(function(data) {
     console.log(names);
         });
 
+  //First function control dropdown
   //initialize dashboard at start up
   function init() {
 
@@ -16,8 +17,10 @@ d3.json(url).then(function(data) {
     let dropdownMenu = d3.select("#selDataset");
 
      // Assign the value of the dropdown menu option to a variable
-        //use 'names' not 'id' because names are in a list  
+        //use 'names' not 'id' because names are in a list 
+        //easier to use forEach becasue we have array as opposed to for n in range lenght_names, range will be 0, 1, 2 
 d3.json(url).then((data) => {   
+  //this becomes an array
   let names = data.names; 
   //id is the variable created, not the existing object  
    names.forEach((id) => {
@@ -28,15 +31,13 @@ dropdownMenu
    });
   
 // Set the first sample from the list
-//WHY IS THIS A MUST?
 let sample_one = names[0];
 
 // Log the value of sample_one
 console.log(sample_one);
 
 // Initialize plots 
-//WHEN PRESS REFRESH goes back to sample 1
-//HOW CAN WE DO THIS BEFORE INTRODCUING THIS FUNCTION 
+
 buildMetadata(sample_one);
 buildBarChart(sample_one);
 buildBubbleChart(sample_one);
@@ -50,13 +51,13 @@ function buildMetadata(sample) {
     let value = metadata.filter(result => result.id == sample);
     console.log(value);
     let valueData = value[0];
-//UNCLEAR HERE, do we need to clear metadata in order to plot the selected sample? 
+
 d3.select("#sample-metadata").html("");
 let PANEL = d3.select("#sample-metadata");
 
 PANEL.html("");
 
-//Heading 5 does not reflect selected subject ID
+
 for (key in valueData) {
      PANEL.append("h5").text(`${key.toUpperCase()}: ${valueData[key]}`)
 }
@@ -94,13 +95,14 @@ let trace1 = {
   }
 };
 
-// Set up the layout
+// Set up the layout, can also change size 
 let layout = {
   title: "Bacteria Per Sample",
   hovermode: "closest",
   xaxis: {title: "OTU ID"},
 };
    
+//"bubble" div tag with id "bubble" remmber ids are unique  
 Plotly.newPlot("bubble", [trace1], layout);
 });
 };
@@ -108,7 +110,7 @@ Plotly.newPlot("bubble", [trace1], layout);
 //New function to build bar chart
 function buildBarChart(sample) {
   //this is repetion of above code, can these be combined?
-  //WHY 2 PARENTHESES AROUND DATA? 
+ 
 d3.json(url).then((data) => {
   let samples = data.samples;
   let sampleArray = samples.filter(sampleDict => sampleDict.id == sample)
@@ -145,15 +147,12 @@ Plotly.newPlot("bar", [trace2], layout)
 };
 
   // Function that updates dashboard when sample is changed
-  //why when using new_sample this didn't work? 
-function optionChanged(value) { 
+function optionChanged(x) { 
   // Log the new value
-  console.log(value); 
+  console.log(x); 
   // Call functions 
-  buildMetadata(value);
-  buildBarChart(value);
-  buildBubbleChart(value);
+  buildMetadata(x);
+  buildBarChart(x);
+  buildBubbleChart(x);
  };
 init();
-
-//HOW TO ADD TO GITHIB PAGES?
