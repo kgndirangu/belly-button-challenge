@@ -1,28 +1,20 @@
 const url = "https://2u-data-curriculum-team.s3.amazonaws.com/dataviz-classroom/v1.1/14-Interactive-Web-Visualizations/02-Homework/samples.json";
 
-//EVERY FUNCTION NEEDS A D3 CALL 
-
-// Fetch the JSON data and console log it
-d3.json(url).then(function(data) {
-    console.log(data);  
-    let names = data.names; 
-    console.log(names);
-        });
-
-  //First function control dropdown
-  //initialize dashboard at start up
+  //First function controls dropdown
+  //Initialize dashboard at start up
   function init() {
 
  // Use D3 to select the dropdown menu
     let dropdownMenu = d3.select("#selDataset");
 
-     // Assign the value of the dropdown menu option to a variable
-        //use 'names' not 'id' because names are in a list 
-        //easier to use forEach becasue we have array as opposed to for n in range lenght_names, range will be 0, 1, 2 
+  // Assign the value of the dropdown menu option to a variable
+  //Use 'names' not 'id' because names are in a list 
+   
 d3.json(url).then((data) => {   
-  //this becomes an array
+  //Create an array
   let names = data.names; 
-  //id is the variable created, not the existing object  
+  //id is the variable created, not the existing object
+  //Use forEach because we have array (as opposed to for n in range, length_names, wherein range will start at 0)  
    names.forEach((id) => {
 dropdownMenu
 .append("option")
@@ -32,9 +24,6 @@ dropdownMenu
   
 // Set the first sample from the list
 let sample_one = names[0];
-
-// Log the value of sample_one
-console.log(sample_one);
 
 // Initialize plots 
 
@@ -53,31 +42,30 @@ function buildMetadata(sample) {
     let valueData = value[0];
 
 d3.select("#sample-metadata").html("");
-let PANEL = d3.select("#sample-metadata");
+let panel = d3.select("#sample-metadata");
 
-PANEL.html("");
+panel.html("");
 
 
 for (key in valueData) {
-     PANEL.append("h5").text(`${key.toUpperCase()}: ${valueData[key]}`)
+     panel.append("h5").text(`${key.toUpperCase()}: ${valueData[key]}`)
 }
   });
   };
 
 
 
- // New functions to build bubble chart
- //HOW DO WE KNOW WHERE CHART GOES ON PAGE?
+ // New function to build bubble chart
+
 function buildBubbleChart(sample) {
-  //D3 to fetch data
+  //D3 to fetch data required for each function
 d3.json(url).then(function(data) {
   let samples = data.samples; 
   let sampleArray = samples.filter(sampleDict => sampleDict.id == sample)
 
-  //Grab the first index from array needed?
+//Grab the first sample from array 
 let value = sampleArray[0];
-//value here is not a keyword, rather the name of each row of sample array
-//why don't we have to create a list and push each row to the list
+//Value here is not a keyword, rather the name of each row of sample array
 let otu_ids = value.otu_ids;
 let otu_labels = value.otu_labels;
 let sample_values = value.sample_values;
@@ -95,21 +83,20 @@ let trace1 = {
   }
 };
 
-// Set up the layout, can also change size 
+// Set up the layout, this step isn't necessary but offers structure (e.g. can change size) 
 let layout = {
   title: "Bacteria Per Sample",
   hovermode: "closest",
   xaxis: {title: "OTU ID"},
 };
    
-//"bubble" div tag with id "bubble" remmber ids are unique  
+//div tag with id "bubble" (ids are unique) dictates where graph will be placed on page  
 Plotly.newPlot("bubble", [trace1], layout);
 });
 };
 
 //New function to build bar chart
 function buildBarChart(sample) {
-  //this is repetion of above code, can these be combined?
  
 d3.json(url).then((data) => {
   let samples = data.samples;
@@ -119,10 +106,11 @@ d3.json(url).then((data) => {
 let otu_ids = value.otu_ids;
 let otu_labels = value.otu_labels;
 let sample_values = value.sample_values;
-//print data to console 
+//Print data to console to check 
 console.log(otu_ids,otu_labels,sample_values);
 
 // Top ten items to display in descending order
+//Use fstring otherwise out ids will be treated as continuous integer 
 let yticks = otu_ids.slice(0,10).map(id => `OTU ${id}`).reverse();
 let xticks = sample_values.slice(0,10).reverse();
 let labels = otu_labels.slice(0,10).reverse();
